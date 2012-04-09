@@ -16,7 +16,7 @@ void isr9();   // Coprocessor Segment Overrun
 void isr10();  // Invalid TSS
 void isr11();  // Segment Not Present
 void isr12();  // Stack-Segment Fault
-void isr13();  // General Protection (Triple Fault)
+void isr13();  // General Protection Exception (Triple Fault)
 void isr14();  // Page Fault
 // isr15 is Intel-Reserved
 void isr16();  // Coprocessor Error

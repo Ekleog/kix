@@ -1,12 +1,14 @@
 #include "interrupt.hpp"
 
 #include "idt.hpp"
+#include "pic.hpp"
 #include "quit.hpp"
 #include "vga.hpp"
 
 void load_interrupts()
 {
    init_idt();
+   pic::remap();
 
    isr(0, isr0, 0);
    isr(2, isr2, 0);
@@ -110,7 +112,7 @@ ISR(12) {
 }
 ISR(13) {
    IBEGIN;
-   panic("Kernel panic: General Protection (Triple Fault)");
+   panic("Kernel panic: General Protection Exception (Triple Fault)");
    IEND;
 }
 ISR(14) {
