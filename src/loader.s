@@ -1,6 +1,7 @@
 global loader
  
 extern kmain
+extern start_ctors, end_ctors
  
 MODULEALIGN equ  1<<0  ; align loaded modules on page boundaries
 MEMINFO     equ  1<<1  ; provide memory map
@@ -24,6 +25,14 @@ loader:
    mov   esp, stack + STACKSIZE
    push  eax ; Multiboot magic number
    push  ebx ; Multiboot info structure
+
+   mov   ebx, start_ctors
+.call_ctors:
+   cmp   ebx, end_ctors    ; If there are no more ctors to run,
+   jnb   .call_ctors_end   ;  Quit
+   call  [ebx]             ; Else, call the ctor
+   jmp   .call_ctors       ;  And retry
+.call_ctors_end:
 
    call  kmain
 

@@ -1,3 +1,4 @@
+#include "interrupt.hpp"
 #include "quit.hpp"
 #include "types.hpp"
 #include "vga.hpp"
@@ -16,6 +17,10 @@ extern "C" void __attribute__ ((noreturn)) kmain(byte *mbd, u32 magic)
    vga::write(vga::pos(1, 1), cmdline);
    vga::write(vga::pos(3, 1), boot_loader_name);
    vga::hide();
+
+   load_interrupts();
+
+   __asm__ volatile ("int $42");
 
    shutdown();
 }

@@ -23,7 +23,7 @@ void init_idt()
 {
    IDTR.limit  = 256 * sizeof(idt_elem);
    IDTR.base   = IDT;
-   __asm__ volatile ("lidt (%0)" : : "p"(&IDTR));
+   __asm__ volatile ("lidt %0" : : "m"(IDTR));
 }
 
 void isr(u8 id, void (*isr) (), byte dpl)

@@ -6,6 +6,7 @@
 
 extern "C" void __attribute__ ((noreturn)) shutdown()
 {
+  // TODO: Call destructors
   __asm__ volatile (
       "\t cli \n"
       ".hang: \n"
