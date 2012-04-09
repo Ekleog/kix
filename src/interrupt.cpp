@@ -7,8 +7,8 @@
 
 void load_interrupts()
 {
-   init_idt();
    pic::remap();
+   init_idt();
 
    isr(0, isr0, 0);
    isr(2, isr2, 0);
@@ -27,10 +27,26 @@ void load_interrupts()
    isr(16, isr16, 0);
    isr(42, isr42, 0);
 
+   isr(0x50, irq0, 0);
+   isr(0x51, irq1, 0);
+   isr(0x52, irq2, 0);
+   isr(0x53, irq3, 0);
+   isr(0x54, irq4, 0);
+   isr(0x55, irq5, 0);
+   isr(0x56, irq6, 0);
+   isr(0x57, irq7, 0);
+   isr(0x58, irq8, 0);
+   isr(0x59, irq9, 0);
+   isr(0x5a, irq10, 0);
+   isr(0x5b, irq11, 0);
+   isr(0x5c, irq12, 0);
+   isr(0x5d, irq13, 0);
+   isr(0x5e, irq14, 0);
+   isr(0x5f, irq15, 0);
+
    validate_idt();
 }
 
-#define ISR(n) void __attribute__ ((noreturn)) isr ## n ()
 #define IBEGIN                \
    __asm__ volatile (         \
       "\t pusha \n"           \
@@ -145,5 +161,70 @@ ISR(42) {
    IBEGIN;
    vga::clear(vga::bg(vga::black) | vga::fg(vga::lgray));
    vga::write(vga::pos(1, 1), "Syscall !");
+   IEND;
+}
+
+IRQ(0) {
+   IBEGIN;
+   IEND;
+}
+IRQ(1) {
+   IBEGIN;
+   IEND;
+}
+IRQ(2) {
+   IBEGIN;
+   IEND;
+}
+IRQ(3) {
+   IBEGIN;
+   IEND;
+}
+IRQ(4) {
+   IBEGIN;
+   IEND;
+}
+IRQ(5) {
+   IBEGIN;
+   IEND;
+}
+IRQ(6) {
+   IBEGIN;
+   IEND;
+}
+IRQ(7) {
+   IBEGIN;
+   IEND;
+}
+IRQ(8) {
+   IBEGIN;
+   IEND;
+}
+IRQ(9) {
+   IBEGIN;
+   IEND;
+}
+IRQ(10) {
+   IBEGIN;
+   IEND;
+}
+IRQ(11) {
+   IBEGIN;
+   IEND;
+}
+IRQ(12) {
+   IBEGIN;
+   IEND;
+}
+IRQ(13) {
+   IBEGIN;
+   IEND;
+}
+IRQ(14) {
+   IBEGIN;
+   IEND;
+}
+IRQ(15) {
+   IBEGIN;
    IEND;
 }
