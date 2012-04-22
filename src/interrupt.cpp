@@ -5,226 +5,221 @@
 #include "quit.hpp"
 #include "vga.hpp"
 
+#define ISRN(n)   isr ## n
+#define SCN(n)    sc  ## n
+#define IRQN(n)   irq ## n
+
+#define ISRD(n)   extern "C" void ISRN(n) ()
+#define SCD(n)    extern "C" void SCN(n)  ()
+#define IRQD(n)   extern "C" void IRQN(n) ()
+
+#define IB(n)                    \
+   __asm__ volatile (            \
+      ".extern impl_" n "  \n"   \
+      ".global " n "       \n"   \
+      "" n ":              \n"   \
+      "\t pushad           \n"   \
+      "\t call impl_" n "  \n"   \
+      "\t popad            \n"   \
+      "\t iretd            \n"   \
+   );
+
+#define ISR(n) IB("isr" #n)            \
+   extern "C" void impl_isr ## n ();   \
+   extern "C" void impl_isr ## n ()
+#define SC(n)  IB("sc"  #n)            \
+   extern "C" void impl_sc  ## n ();   \
+   extern "C" void impl_sc  ## n ()
+#define IRQ(n) IB("irq" #n)            \
+   extern "C" void impl_irq ## n ();   \
+   extern "C" void impl_irq ## n ()
+
+ISRD(0x00); ISRD(0x02); ISRD(0x03); ISRD(0x04); ISRD(0x05); ISRD(0x06);
+ISRD(0x07); ISRD(0x08); ISRD(0x09); ISRD(0x0a); ISRD(0x0b); ISRD(0x0c);
+ISRD(0x0d); ISRD(0x0e); ISRD(0x10); ISRD(0x11); ISRD(0x12); ISRD(0x13);
+
+SCD(0x20);
+
+IRQD(0x50); IRQD(0x51); IRQD(0x52); IRQD(0x53);
+IRQD(0x54); IRQD(0x55); IRQD(0x56); IRQD(0x57);
+IRQD(0x58); IRQD(0x59); IRQD(0x5a); IRQD(0x5b);
+IRQD(0x5c); IRQD(0x5d); IRQD(0x5e); IRQD(0x5f);
+
 void load_interrupts()
 {
    pic::remap();
    init_idt();
 
-   isr(0, isr0, 0);
-   isr(2, isr2, 0);
-   isr(3, isr3, 0);
-   isr(4, isr4, 0);
-   isr(5, isr5, 0);
-   isr(6, isr6, 0);
-   isr(7, isr7, 0);
-   isr(8, isr8, 0);
-   isr(9, isr9, 0);
-   isr(10, isr10, 0);
-   isr(11, isr11, 0);
-   isr(12, isr12, 0);
-   isr(13, isr13, 0);
-   isr(14, isr14, 0);
-   isr(16, isr16, 0);
-   isr(42, isr42, 0);
+   isr(0x00, ISRN(0x00), 0);
+   // isr0x01
+   isr(0x02, ISRN(0x02), 0);
+   isr(0x03, ISRN(0x03), 0);
+   isr(0x04, ISRN(0x04), 0);
+   isr(0x05, ISRN(0x05), 0);
+   isr(0x06, ISRN(0x06), 0);
+   isr(0x07, ISRN(0x07), 0);
+   isr(0x08, ISRN(0x08), 0);
+   isr(0x09, ISRN(0x09), 0);
+   isr(0x0a, ISRN(0x0a), 0);
+   isr(0x0b, ISRN(0x0b), 0);
+   isr(0x0c, ISRN(0x0c), 0);
+   isr(0x0d, ISRN(0x0d), 0);
+   isr(0x0e, ISRN(0x0e), 0);
+   // isr0x0f
+   isr(0x10, ISRN(0x10), 0);
+   isr(0x11, ISRN(0x11), 0);
+   isr(0x12, ISRN(0x12), 0);
+   isr(0x13, ISRN(0x13), 0);
 
-   isr(0x50, irq0, 0);
-   isr(0x51, irq1, 0);
-   isr(0x52, irq2, 0);
-   isr(0x53, irq3, 0);
-   isr(0x54, irq4, 0);
-   isr(0x55, irq5, 0);
-   isr(0x56, irq6, 0);
-   isr(0x57, irq7, 0);
-   isr(0x58, irq8, 0);
-   isr(0x59, irq9, 0);
-   isr(0x5a, irq10, 0);
-   isr(0x5b, irq11, 0);
-   isr(0x5c, irq12, 0);
-   isr(0x5d, irq13, 0);
-   isr(0x5e, irq14, 0);
-   isr(0x5f, irq15, 0);
+   isr(0x20, SCN(0x20), 0);
+
+   isr(0x50, IRQN(0x50), 0);
+   isr(0x51, IRQN(0x51), 0);
+   isr(0x52, IRQN(0x52), 0);
+   isr(0x53, IRQN(0x53), 0);
+   isr(0x54, IRQN(0x54), 0);
+   isr(0x55, IRQN(0x55), 0);
+   isr(0x56, IRQN(0x56), 0);
+   isr(0x57, IRQN(0x57), 0);
+   isr(0x58, IRQN(0x58), 0);
+   isr(0x59, IRQN(0x59), 0);
+   isr(0x5a, IRQN(0x5a), 0);
+   isr(0x5b, IRQN(0x5b), 0);
+   isr(0x5c, IRQN(0x5c), 0);
+   isr(0x5d, IRQN(0x5d), 0);
+   isr(0x5e, IRQN(0x5e), 0);
+   isr(0x5f, IRQN(0x5f), 0);
 
    validate_idt();
 }
 
-#define IBEGIN                \
-   __asm__ volatile (         \
-      "\t pusha \n"           \
-      "\t push %gs \n"        \
-      "\t push %fs \n"        \
-      "\t push %ds \n"        \
-      "\t push %es \n"        \
-   )
-#define IEND                  \
-   __asm__ volatile (         \
-      "\t pop %es \n"         \
-      "\t pop %ds \n"         \
-      "\t pop %fs \n"         \
-      "\t pop %gs \n"         \
-      "\t popa \n"            \
-      "\t iret \n"            \
-   );                         \
-   __builtin_unreachable()
+// ISRs
 
-ISR(0) {
-   IBEGIN;
+ISR(0x00) {
    panic("Kernel panic: Divide Error");
-   IEND;
-}
-ISR(2) {
-   IBEGIN;
-   panic("Kernel panic: NMI Interrupt");
-   IEND;
-}
-ISR(3) {
-   IBEGIN;
-   panic("Kernel panic: Breakpoint");
-   IEND;
-}
-ISR(4) {
-   IBEGIN;
-   panic("Kernel panic: Overflow");
-   IEND;
-}
-ISR(5) {
-   IBEGIN;
-   panic("Kernel panic: BOUND Range Excedeed");
-   IEND;
-}
-ISR(6) {
-   IBEGIN;
-   panic("Kernel panic: Invalid Opcode");
-   IEND;
-}
-ISR(7) {
-   IBEGIN;
-   panic("Kernel panic: No Math Coprocessor");
-   IEND;
-}
-ISR(8) {
-   IBEGIN;
-   panic("Kernel panic: Double Fault");
-   IEND;
-}
-ISR(9) {
-   IBEGIN;
-   panic("Kernel panic: Coprocessor Segment Overrun");
-   IEND;
-}
-ISR(10) {
-   IBEGIN;
-   panic("Kernel panic: Invalid TSS");
-   IEND;
-}
-ISR(11) {
-   IBEGIN;
-   panic("Kernel panic: Segment Not Present");
-   IEND;
-}
-ISR(12) {
-   IBEGIN;
-   panic("Kernel panic: Stack-Segment Fault");
-   IEND;
-}
-ISR(13) {
-   IBEGIN;
-   panic("Kernel panic: General Protection Exception (Triple Fault)");
-   IEND;
-}
-ISR(14) {
-   IBEGIN;
-   panic("Kernel panic: Page Fault");
-   IEND;
-}
-ISR(16) {
-   IBEGIN;
-   panic("Kernel panic: Coprocessor Error");
-   IEND;
-}
-ISR(17) {
-   IBEGIN;
-   panic("Kernel panic: Alignment Check");
-   IEND;
-}
-ISR(18) {
-   IBEGIN;
-   panic("Kernel panic: Machine Check");
-   IEND;
-}
-ISR(19) {
-   IBEGIN;
-   panic("Kernel panic: SIMD Floating-Point Exception");
-   IEND;
 }
 
-ISR(42) {
-   IBEGIN;
+ISR(0x02) {
+   panic("Kernel panic: NMI Interrupt");
+}
+
+ISR(0x03) {
+   panic("Kernel panic: Breakpoint");
+}
+
+ISR(0x04) {
+   panic("Kernel panic: Overflow");
+}
+
+ISR(0x05) {
+   panic("Kernel panic: BOUND Range Excedeed");
+}
+
+ISR(0x06) {
+   panic("Kernel panic: Invalid Opcode");
+}
+
+ISR(0x07) {
+   panic("Kernel panic: No Math Coprocessor");
+}
+
+ISR(0x08) {
+   panic("Kernel panic: Double Fault");
+}
+
+ISR(0x09) {
+   panic("Kernel panic: Coprocessor Segment Overrun");
+}
+
+ISR(0x0a) {
+   panic("Kernel panic: Invalid TSS");
+}
+
+ISR(0x0b) {
+   panic("Kernel panic: Segment Not Present");
+}
+
+ISR(0x0c) {
+   panic("Kernel panic: Stack-Segment Fault");
+}
+
+ISR(0x0d) {
+   panic("Kernel panic: General Protection Exception (Triple Fault)");
+}
+
+ISR(0x0e) {
+   panic("Kernel panic: Page Fault");
+}
+
+ISR(0x10) {
+   panic("Kernel panic: Coprocessor Error");
+}
+
+ISR(0x11) {
+   panic("Kernel panic: Alignment Check");
+}
+
+ISR(0x12) {
+   panic("Kernel panic: Machine Check");
+}
+
+ISR(0x13) {
+   panic("Kernel panic: SIMD Floating-Point Exception");
+}
+
+// SCs
+
+SC(0x20) {
    vga::clear(vga::bg(vga::black) | vga::fg(vga::lgray));
    vga::write(vga::pos(1, 1), "Syscall !");
-   IEND;
 }
 
-IRQ(0) {
-   IBEGIN;
-   IEND;
+// IRQs
+
+IRQ(0x50) {
 }
-IRQ(1) {
-   IBEGIN;
-   IEND;
+
+IRQ(0x51) {
 }
-IRQ(2) {
-   IBEGIN;
-   IEND;
+
+IRQ(0x52) {
 }
-IRQ(3) {
-   IBEGIN;
-   IEND;
+
+IRQ(0x53) {
 }
-IRQ(4) {
-   IBEGIN;
-   IEND;
+
+IRQ(0x54) {
 }
-IRQ(5) {
-   IBEGIN;
-   IEND;
+
+IRQ(0x55) {
 }
-IRQ(6) {
-   IBEGIN;
-   IEND;
+
+IRQ(0x56) {
 }
-IRQ(7) {
-   IBEGIN;
-   IEND;
+
+IRQ(0x57) {
 }
-IRQ(8) {
-   IBEGIN;
-   IEND;
+
+IRQ(0x58) {
 }
-IRQ(9) {
-   IBEGIN;
-   IEND;
+
+IRQ(0x59) {
 }
-IRQ(10) {
-   IBEGIN;
-   IEND;
+
+IRQ(0x5a) {
 }
-IRQ(11) {
-   IBEGIN;
-   IEND;
+
+IRQ(0x5b) {
 }
-IRQ(12) {
-   IBEGIN;
-   IEND;
+
+IRQ(0x5c) {
 }
-IRQ(13) {
-   IBEGIN;
-   IEND;
+
+IRQ(0x5d) {
 }
-IRQ(14) {
-   IBEGIN;
-   IEND;
+
+IRQ(0x5e) {
 }
-IRQ(15) {
-   IBEGIN;
-   IEND;
+
+IRQ(0x5f) {
 }

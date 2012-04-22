@@ -20,13 +20,5 @@ extern "C" void __attribute__ ((noreturn)) kmain(byte *mbd, u32 magic)
 
    load_interrupts();
 
-   __asm__ volatile ("int $42");
-
-   for (volatile int i = 0 ; i != 100000000 ; ++i);
-
-   volatile int a = 0;
-   volatile int b = 42;
-   b = b / a;
-
    shutdown();
 }

@@ -31,11 +31,12 @@ WARNINGS :=                                                          \
    -Wold-style-cast -Woverloaded-virtual -Wpacked -Wpadded -Wreorder \
    -Wsign-promo -Wstrict-null-sentinel
 
-CXXFLAGS := $(WARNINGS)                                              \
+CXXFLAGS := $(WARNINGS)                                  				\
 	-O3 -std=c++11 -nostdlib -fno-builtin -nostartfiles -nodefaultlibs\
-	-fno-exceptions -fno-rtti -fno-stack-protector
-ASMFLAGS := -Ox
- LDFLAGS := -O3 -T $(LDFILE)
+	-fno-exceptions -fno-rtti -fno-stack-protector -masm=intel			\
+	$(CXXFLAGS)
+ASMFLAGS := -Ox $(ASMFLAGS)
+ LDFLAGS := -O3 -T $(LDFILE) $(LDFLAGS)
 
 IMG  := kix.img
 PAD  := build/pad

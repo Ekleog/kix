@@ -29,7 +29,7 @@ void init_idt()
 void isr(u8 id, void (*isr) (), byte dpl)
 {
    u16 selector;
-   __asm__ volatile ("movw %%cs, %0" : "=g"(selector));
+   __asm__ volatile ("movw %0, %%cs" : "=g"(selector));
 
    u32 offset = reinterpret_cast<u32>(isr);
 
