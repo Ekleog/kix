@@ -3,6 +3,7 @@
 #include "idt.hpp"
 #include "pic.hpp"
 #include "quit.hpp"
+#include "util.hpp"
 #include "vga.hpp"
 
 #define ISRN(n)   isr ## n
@@ -13,15 +14,15 @@
 #define SCD(n)    extern "C" void SCN(n)  ()
 #define IRQD(n)   extern "C" void IRQN(n) ()
 
-#define IB(n)                    \
-   __asm__ volatile (            \
-      ".extern impl_" n "  \n"   \
-      ".global " n "       \n"   \
-      "" n ":              \n"   \
-      "\t pushad           \n"   \
-      "\t call impl_" n "  \n"   \
-      "\t popad            \n"   \
-      "\t iretd            \n"   \
+#define IB(n)                          \
+   __asm__ volatile (                  \
+      ".extern impl_" n "  \n"         \
+      ".global " n "       \n"         \
+      "" n ":              \n"         \
+      "\t pushad           \n"         \
+      "\t call impl_" n "  \n"         \
+      "\t popad            \n"         \
+      "\t iretd            \n"         \
    );
 
 #define ISR(n) IB("isr" #n)            \
@@ -30,7 +31,33 @@
 #define SC(n)  IB("sc"  #n)            \
    extern "C" void impl_sc  ## n ();   \
    extern "C" void impl_sc  ## n ()
-#define IRQ(n) IB("irq" #n)            \
+#define IRQ(n)                         \
+   __asm__ volatile (                  \
+      ".extern impl_irq" #n " \n"      \
+      ".global irq" #n "      \n"      \
+      "irq" #n ":             \n"      \
+      "\t pushad              \n"      \
+      "\t call impl_irq" #n " \n"      \
+      "\t mov al, 0x20        \n"      \
+      "\t out 0x20, al        \n"      \
+      "\t popad               \n"      \
+      "\t iretd               \n"      \
+   );                                  \
+   extern "C" void impl_irq ## n ();   \
+   extern "C" void impl_irq ## n ()
+#define IRQ2(n)                        \
+   __asm__ volatile (                  \
+      ".extern impl_irq" #n " \n"      \
+      ".global irq" #n "      \n"      \
+      "irq" #n ":             \n"      \
+      "\t pushad              \n"      \
+      "\t call impl_irq" #n " \n"      \
+      "\t mov al, 0x20        \n"      \
+      "\t out 0xA0, al        \n"      \
+      "\t out 0x20, al        \n"      \
+      "\t popad               \n"      \
+      "\t iretd               \n"      \
+   );                                  \
    extern "C" void impl_irq ## n ();   \
    extern "C" void impl_irq ## n ()
 
@@ -179,7 +206,12 @@ SC(0x20) {
 IRQ(0x50) {
 }
 
+u32 i = vga::pos(5, 1);
 IRQ(0x51) {
+   byte c = inb(0x60);
+   static char trans[] = "??1234567890-=??qwertyuiop[]??asdfghjkl;'`?zxcvbnm,./?*? ?????????????789-456+1230.??";
+   vga::write(i, trans[c]);
+   ++i;
 }
 
 IRQ(0x52) {
@@ -200,26 +232,26 @@ IRQ(0x56) {
 IRQ(0x57) {
 }
 
-IRQ(0x58) {
+IRQ2(0x58) {
 }
 
-IRQ(0x59) {
+IRQ2(0x59) {
 }
 
-IRQ(0x5a) {
+IRQ2(0x5a) {
 }
 
-IRQ(0x5b) {
+IRQ2(0x5b) {
 }
 
-IRQ(0x5c) {
+IRQ2(0x5c) {
 }
 
-IRQ(0x5d) {
+IRQ2(0x5d) {
 }
 
-IRQ(0x5e) {
+IRQ2(0x5e) {
 }
 
-IRQ(0x5f) {
+IRQ2(0x5f) {
 }

@@ -20,5 +20,7 @@ extern "C" void __attribute__ ((noreturn)) kmain(byte *mbd, u32 magic)
 
    load_interrupts();
 
+   while (true) ;
+
    shutdown();
 }

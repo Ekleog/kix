@@ -13,9 +13,6 @@ namespace pic
 {
    void remap(u8 off1, u8 off2)
    {
-      // Save masks
-      u8 m1 = inb(PIC1_DTA);
-      u8 m2 = inb(PIC2_DTA);
       // Start initialization
       outb(PIC1_CMD, 0x11); io_wait();
       outb(PIC2_CMD, 0x11); io_wait();
@@ -28,8 +25,8 @@ namespace pic
       // Set the 8086/88 mode
       outb(PIC1_DTA, 0x01); io_wait();
       outb(PIC2_DTA, 0x01); io_wait();
-      // Restore masks
-      outb(PIC1_DTA, m1);
-      outb(PIC2_DTA, m2);
+      // Set masks
+      outb(PIC1_DTA, static_cast <unsigned char>(~0x02));
+      outb(PIC2_DTA, static_cast <unsigned char>(~0x00));
    }
 }
