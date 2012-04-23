@@ -5,7 +5,7 @@
 #include "string.hpp"
 #include "vga.hpp"
 
-extern "C" void __attribute__ ((noreturn)) shutdown()
+void __attribute__ ((noreturn)) shutdown()
 {
   // TODO: Call destructors
   asm volatile (
@@ -18,7 +18,7 @@ extern "C" void __attribute__ ((noreturn)) shutdown()
   unreachable();
 }
 
-extern "C" void __attribute__ ((noreturn)) panic(const char *msg)
+void __attribute__ ((noreturn)) panic(const char *msg)
 {
   uint32_t len = strlen(msg);
   uint32_t pos = (vga::max_i - len) / 2;

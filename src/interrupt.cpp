@@ -75,8 +75,10 @@ IRQD(0x5c); IRQD(0x5d); IRQD(0x5e); IRQD(0x5f);
 
 void load_interrupts()
 {
+   using idt::isr;
+
    pic::remap();
-   init_idt();
+   idt::init();
 
    isr(0x00, ISRN(0x00), 0);
    // isr0x01
@@ -118,7 +120,7 @@ void load_interrupts()
    isr(0x5e, IRQN(0x5e), 0);
    isr(0x5f, IRQN(0x5f), 0);
 
-   validate_idt();
+   idt::validate();
 }
 
 // ISRs

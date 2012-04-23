@@ -3,46 +3,50 @@
 
 #include <stdint.h>
 
-struct idt_elem
-{
-   uint16_t low_offset;
-   uint16_t selector;
-   uint16_t settings;
-   uint16_t high_offset;
-};
+namespace idt {
 
-struct idtr
-{
-   uint16_t limit;
-   idt_elem *base;
-} __attribute__ ((packed));
+   struct idt_elem
+   {
+      uint16_t low_offset;
+      uint16_t selector;
+      uint16_t settings;
+      uint16_t high_offset;
+   };
 
-extern idtr IDTR;
-extern idt_elem IDT[256];
+   struct idtr
+   {
+      uint16_t limit;
+      idt_elem *base;
+   } __attribute__ ((packed));
 
-inline void init_idt()
-{
-   IDTR.limit  = 256 * sizeof(idt_elem);
-   IDTR.base   = IDT;
-   asm volatile ("lidt %0" : : "m"(IDTR));
-}
+   extern idtr IDTR;
+   extern idt_elem IDT[256];
 
-inline void isr(uint8_t id, void (*isr) (), uint8_t dpl)
-{
-   uint16_t selector;
-   asm volatile ("movw %0, %%cs" : "=g"(selector));
+   inline void init()
+   {
+      IDTR.limit  = 256 * sizeof(idt_elem);
+      IDTR.base   = IDT;
+      asm volatile ("lidt %0" : : "m"(IDTR));
+   }
 
-   uint32_t offset = reinterpret_cast<uint32_t>(isr);
+   inline void isr(uint8_t id, void (*isr) (), uint8_t dpl)
+   {
+      uint16_t selector;
+      asm volatile ("movw %0, %%cs" : "=g"(selector));
 
-   IDT[id].low_offset   = offset & 0xFFFF;
-   IDT[id].selector     = selector;
-   IDT[id].settings     = 0x8E00 | static_cast<uint16_t>(dpl << 13);
-   IDT[id].high_offset  = static_cast<uint16_t>(offset >> 16);
-}
+      uint32_t offset = reinterpret_cast<uint32_t>(isr);
 
-inline void validate_idt()
-{
-   asm volatile ("sti");
+      IDT[id].low_offset   = offset & 0xFFFF;
+      IDT[id].selector     = selector;
+      IDT[id].settings     = 0x8E00 | static_cast<uint16_t>(dpl << 13);
+      IDT[id].high_offset  = static_cast<uint16_t>(offset >> 16);
+   }
+
+   inline void validate()
+   {
+      asm volatile ("sti");
+   }
+
 }
 
 #endif
