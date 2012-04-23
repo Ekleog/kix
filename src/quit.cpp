@@ -1,7 +1,7 @@
 #include "quit.hpp"
 
+#include <stdint.h>
 #include "string.hpp"
-#include "types.hpp"
 #include "vga.hpp"
 
 extern "C" void __attribute__ ((noreturn)) shutdown()
@@ -19,8 +19,8 @@ extern "C" void __attribute__ ((noreturn)) shutdown()
 
 extern "C" void __attribute__ ((noreturn)) panic(const char *msg)
 {
-  u32 len = strlen(msg);
-  u32 pos = (vga::max_i - len) / 2;
+  uint32_t len = strlen(msg);
+  uint32_t pos = (vga::max_i - len) / 2;
 
   vga::hide();
   vga::clear(vga::bg(vga::blue) | vga::fg(vga::white));

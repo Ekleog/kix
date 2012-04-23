@@ -1,6 +1,6 @@
 #include "pic.hpp"
 
-#include "types.hpp"
+#include <stdint.h>
 #include "util.hpp"
 
 #define PIC1_CMD 0x20
@@ -11,7 +11,7 @@
 
 namespace pic
 {
-   void remap(u8 off1, u8 off2)
+   void remap(uint8_t off1, uint8_t off2)
    {
       // Start initialization
       outb(PIC1_CMD, 0x11); io_wait();
@@ -26,7 +26,7 @@ namespace pic
       outb(PIC1_DTA, 0x01); io_wait();
       outb(PIC2_DTA, 0x01); io_wait();
       // Set masks
-      outb(PIC1_DTA, static_cast <unsigned char>(~0xFF));
-      outb(PIC2_DTA, static_cast <unsigned char>(~0xFF));
+      outb(PIC1_DTA, 0x00);
+      outb(PIC2_DTA, 0x00);
    }
 }

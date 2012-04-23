@@ -1,16 +1,15 @@
 #include "string.hpp"
 
-#include "types.hpp"
+#include <stdint.h>
 
-extern "C" u32 __attribute__ ((pure)) strlen(const char *str)
+extern "C" uint_fast32_t __attribute__ ((pure)) strlen(const char *str)
 {
-  u32 res = 0;
+   uint_fast32_t res = 0;
 
-  while (*str)
-    {
+   while (*str) {
       ++str;
       ++res;
-    }
+   }
 
-  return res;
+   return res;
 }

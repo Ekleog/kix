@@ -31,7 +31,7 @@ WARNINGS :=                                                          \
    -Wold-style-cast -Woverloaded-virtual -Wpacked -Wpadded -Wreorder \
    -Wsign-promo -Wstrict-null-sentinel
 
-CXXFLAGS := $(WARNINGS)                                  				\
+CXXFLAGS := $(WARNINGS) -ffreestanding                   				\
 	-O3 -std=c++11 -nostdlib -fno-builtin -nostartfiles -nodefaultlibs\
 	-fno-exceptions -fno-rtti -fno-stack-protector -masm=intel			\
 	$(CXXFLAGS)

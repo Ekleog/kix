@@ -1,11 +1,11 @@
+#include <stdint.h>
 #include "interrupt.hpp"
 #include "quit.hpp"
-#include "types.hpp"
 #include "vga.hpp"
 
 // Suppress missing-declaration warning
-extern "C" void __attribute__ ((noreturn)) kmain(byte *, u32);
-extern "C" void __attribute__ ((noreturn)) kmain(byte *mbd, u32 magic)
+extern "C" void __attribute__ ((noreturn)) kmain(uint8_t *, uint32_t);
+extern "C" void __attribute__ ((noreturn)) kmain(uint8_t *mbd, uint32_t magic)
 {
    if (magic != 0x2BADB002)
       panic("Invalid magic boot number.");

@@ -1,23 +1,23 @@
 #ifndef vga_hpp_included
 #define vga_hpp_included 1
 
-#include "types.hpp"
+#include <stdint.h>
 #include "util.hpp"
 
 namespace vga
 {
   // {{{ max_c, max_r, max_i, (base_ptr, max_ptr)
-  constexpr u32 max_c = 80;
-  constexpr u32 max_r = 25;
+  constexpr uint32_t max_c = 80;
+  constexpr uint32_t max_r = 25;
 
-  constexpr u32 max_i = max_c * max_r;
+  constexpr uint32_t max_i = max_c * max_r;
 
-  constexpr byte *base_ptr = reinterpret_cast <byte *>(0xb8000);
-  constexpr byte *max_ptr  = base_ptr + 2 * max_i;
+  constexpr uint8_t *base_ptr = reinterpret_cast <uint8_t *>(0xb8000);
+  constexpr uint8_t *max_ptr  = base_ptr + 2 * max_i;
   // }}}
 
   // {{{ color
-  enum color : u8
+  enum color : uint8_t
   {
     black     = 0x00,
     dgray     = 0x08,
@@ -43,19 +43,19 @@ namespace vga
   // }}}
 
   // {{{ pos
-  constexpr u32 pos(u32 r, u32 c)
+  constexpr uint32_t pos(uint32_t r, uint32_t c)
   {
     return r * max_c + c;
   }
   // }}}
 
   // {{{ fg, bg
-  constexpr u8 fg(u8 c)
+  constexpr uint8_t fg(uint8_t c)
   {
     return c;
   }
 
-  constexpr u8 bg(u8 c)
+  constexpr uint8_t bg(uint8_t c)
   {
     return static_cast <unsigned char>(c << 4);
   }
@@ -63,12 +63,12 @@ namespace vga
 
   // {{{ write
   // {{{ write(pos, char, [color])
-  inline void write(u32 pos, char c)
+  inline void write(uint32_t pos, char c)
   {
     *(reinterpret_cast <char *>(base_ptr + (pos << 1))) = c;
   }
 
-  inline void write(u32 pos, char c, u8 color)
+  inline void write(uint32_t pos, char c, uint8_t color)
   {
     *(reinterpret_cast <char *>(base_ptr + (pos << 1))) = c;
     *(                          base_ptr + (pos << 1))  = color;
@@ -76,7 +76,7 @@ namespace vga
   // }}}
 
   // {{{ write(pos, string, [color])
-  inline void write(u32 pos, const char *c)
+  inline void write(uint32_t pos, const char *c)
   {
     char * p = reinterpret_cast <char *>(base_ptr + (pos << 1));
     while (*c)
@@ -87,9 +87,9 @@ namespace vga
       }
   }
 
-  inline void write(u32 pos, const char *c, u8 color)
+  inline void write(uint32_t pos, const char *c, uint8_t color)
   {
-    u8 * p = base_ptr + (pos << 1);
+    uint8_t * p = base_ptr + (pos << 1);
     while (*c)
       {
         *(reinterpret_cast <char *>(p)) = *c;
@@ -102,9 +102,9 @@ namespace vga
   // }}}
 
   // {{{ clear
-  inline void clear(u8 color = 0x07)
+  inline void clear(uint8_t color = 0x07)
   {
-    u8 *p = base_ptr;
+    uint8_t *p = base_ptr;
     while (p != max_ptr)
     {
       *p = ' ';
@@ -116,7 +116,7 @@ namespace vga
   // }}}
 
   // {{{ move, hide
-  inline void move(u32 pos)
+  inline void move(uint32_t pos)
   {
     outb(0x3d4, 0x0F);
     outb(0x3d5, pos & 0xFF);
