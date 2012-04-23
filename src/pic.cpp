@@ -26,7 +26,7 @@ namespace pic
       outb(PIC1_DTA, 0x01); io_wait();
       outb(PIC2_DTA, 0x01); io_wait();
       // Set masks
-      outb(PIC1_DTA, static_cast <unsigned char>(~0x02));
-      outb(PIC2_DTA, static_cast <unsigned char>(~0x00));
+      outb(PIC1_DTA, static_cast <unsigned char>(~0xFF));
+      outb(PIC2_DTA, static_cast <unsigned char>(~0xFF));
    }
 }
