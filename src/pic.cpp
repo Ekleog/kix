@@ -1,7 +1,7 @@
 #include "pic.hpp"
 
 #include <stdint.h>
-#include "util.hpp"
+#include "asm.hpp"
 
 #define PIC1_CMD 0x20
 #define PIC1_DTA 0x21

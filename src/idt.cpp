@@ -23,13 +23,13 @@ void init_idt()
 {
    IDTR.limit  = 256 * sizeof(idt_elem);
    IDTR.base   = IDT;
-   __asm__ volatile ("lidt %0" : : "m"(IDTR));
+   asm volatile ("lidt %0" : : "m"(IDTR));
 }
 
 void isr(uint8_t id, void (*isr) (), uint8_t dpl)
 {
    uint16_t selector;
-   __asm__ volatile ("movw %0, %%cs" : "=g"(selector));
+   asm volatile ("movw %0, %%cs" : "=g"(selector));
 
    uint32_t offset = reinterpret_cast<uint32_t>(isr);
 
@@ -41,5 +41,5 @@ void isr(uint8_t id, void (*isr) (), uint8_t dpl)
 
 void validate_idt()
 {
-   __asm__ volatile ("sti");
+   asm volatile ("sti");
 }

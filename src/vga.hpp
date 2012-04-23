@@ -2,7 +2,7 @@
 #define vga_hpp_included 1
 
 #include <stdint.h>
-#include "util.hpp"
+#include "asm.hpp"
 
 namespace vga
 {

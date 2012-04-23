@@ -1,20 +1,21 @@
 #include "quit.hpp"
 
 #include <stdint.h>
+#include "compiler.hpp"
 #include "string.hpp"
 #include "vga.hpp"
 
 extern "C" void __attribute__ ((noreturn)) shutdown()
 {
   // TODO: Call destructors
-  __asm__ volatile (
+  asm volatile (
       "\t cli \n"
       ".hang: \n"
       "\t hlt \n"
       "\t jmp .hang \n"
   );
 
-  __builtin_unreachable();
+  unreachable();
 }
 
 extern "C" void __attribute__ ((noreturn)) panic(const char *msg)

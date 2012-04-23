@@ -1,9 +1,10 @@
 #include "interrupt.hpp"
 
+#include "compiler.hpp"
 #include "idt.hpp"
 #include "pic.hpp"
 #include "quit.hpp"
-#include "util.hpp"
+#include "asm.hpp"
 #include "vga.hpp"
 
 #define ISRN(n)   isr ## n
@@ -15,7 +16,7 @@
 #define IRQD(n)   extern "C" void IRQN(n) ()
 
 #define IB(n)                          \
-   __asm__ volatile (                  \
+   asm volatile (                      \
       ".extern impl_" n "  \n"         \
       ".global " n "       \n"         \
       "" n ":              \n"         \
@@ -32,7 +33,7 @@
    extern "C" void impl_sc  ## n ();   \
    extern "C" void impl_sc  ## n ()
 #define IRQ(n)                         \
-   __asm__ volatile (                  \
+   asm volatile (                      \
       ".extern impl_irq" #n " \n"      \
       ".global irq" #n "      \n"      \
       "irq" #n ":             \n"      \
@@ -46,7 +47,7 @@
    extern "C" void impl_irq ## n ();   \
    extern "C" void impl_irq ## n ()
 #define IRQ2(n)                        \
-   __asm__ volatile (                  \
+   asm volatile (                      \
       ".extern impl_irq" #n " \n"      \
       ".global irq" #n "      \n"      \
       "irq" #n ":             \n"      \
