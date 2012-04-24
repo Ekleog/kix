@@ -23,9 +23,7 @@ namespace idt
 
    inline void init()
    {
-      idtr IDTR;
-      IDTR.limit  = 256 * sizeof(idt_elem);
-      IDTR.base   = IDT;
+      idtr IDTR{256 * sizeof(idt_elem), IDT};
       asm volatile ("lidt %0" : : "m"(IDTR));
    }
 
