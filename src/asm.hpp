@@ -17,7 +17,7 @@ inline void outb(uint16_t port, uint8_t byte)
 
 inline void io_wait()
 {
-   // TODO: Find a really unused port
+   // TODO: Find a better way to io_wait, or a really unused port
    outb(0x80, 0);
 }
 

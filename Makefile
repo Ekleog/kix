@@ -85,8 +85,6 @@ $(IMG): $(STGFILES) $(PAD) $(BIN) Makefile
 	$(call color,1;34m,-> Putting all together)
 	@cat $(STGFILES) $(PAD) $(BIN) > $(IMG)
 
-# TODO: Find a better way to download this
-GRUB := grub-0.97-i386-pc
 ext/%.stage:
 	$(call color,35m,-> Downloading GRUB stages)
 	@wget ftp://alpha.gnu.org/gnu/grub/$(GRUB).tar.gz
@@ -104,7 +102,6 @@ $(BIN): $(OBJFILES) $(LDFILE) Makefile
 	@$(LD) $(LDFLAGS) $(OBJLDR) $(OBJFILES:$(OBJLDR)=) -o $(BIN)
 
 # mkdir / rmdir is a quick&dirty "hack" to create the directory for the .d
-# TODO: Improve that
 build/%.cpp.o: %.cpp Makefile
 	$(call color,1;32m,-> Building $<)
 	@mkdir -p $@ 2> /dev/null ; true
