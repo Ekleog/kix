@@ -26,8 +26,9 @@
       "\t iretd            \n"         \
    );
 
+// TODO: Remove noreturn
 #define ISR(n) IB("isr" #n)            \
-   extern "C" void impl_isr ## n ();   \
+   extern "C" void __attribute__ ((noreturn)) impl_isr ## n ();   \
    extern "C" void impl_isr ## n ()
 #define SC(n)  IB("sc"  #n)            \
    extern "C" void impl_sc  ## n ();   \
@@ -62,9 +63,12 @@
    extern "C" void impl_irq ## n ();   \
    extern "C" void impl_irq ## n ()
 
-ISRD(0x00); ISRD(0x02); ISRD(0x03); ISRD(0x04); ISRD(0x05); ISRD(0x06);
-ISRD(0x07); ISRD(0x08); ISRD(0x09); ISRD(0x0a); ISRD(0x0b); ISRD(0x0c);
-ISRD(0x0d); ISRD(0x0e); ISRD(0x10); ISRD(0x11); ISRD(0x12); ISRD(0x13);
+ISRD(0x00); ISRD(0x01); ISRD(0x02); ISRD(0x03);
+ISRD(0x04); ISRD(0x05); ISRD(0x06); ISRD(0x07);
+ISRD(0x08); ISRD(0x09); ISRD(0x0a); ISRD(0x0b);
+ISRD(0x0c); ISRD(0x0d); ISRD(0x0e); // 0x0f reserved
+ISRD(0x10); ISRD(0x11); ISRD(0x12); ISRD(0x13);
+// reserved up to 0x1f
 
 SCD(0x20);
 
@@ -103,9 +107,9 @@ void load_interrupts()
 
    isr(0x20, SCN(0x20), 0);
 
-   isr(0x50, IRQN(0x50), 0);
+   //isr(0x50, IRQN(0x50), 0);
    isr(0x51, IRQN(0x51), 0);
-   isr(0x52, IRQN(0x52), 0);
+   /*isr(0x52, IRQN(0x52), 0);
    isr(0x53, IRQN(0x53), 0);
    isr(0x54, IRQN(0x54), 0);
    isr(0x55, IRQN(0x55), 0);
@@ -118,7 +122,7 @@ void load_interrupts()
    isr(0x5c, IRQN(0x5c), 0);
    isr(0x5d, IRQN(0x5d), 0);
    isr(0x5e, IRQN(0x5e), 0);
-   isr(0x5f, IRQN(0x5f), 0);
+   isr(0x5f, IRQN(0x5f), 0);*/
 
    idt::validate();
 }
@@ -127,6 +131,10 @@ void load_interrupts()
 
 ISR(0x00) {
    panic("Kernel panic: Divide Error");
+}
+
+ISR(0x01) {
+   panic("Kernel panic: Debug");
 }
 
 ISR(0x02) {
@@ -181,6 +189,8 @@ ISR(0x0e) {
    panic("Kernel panic: Page Fault");
 }
 
+// 0x0f reserved
+
 ISR(0x10) {
    panic("Kernel panic: Coprocessor Error");
 }
@@ -197,6 +207,8 @@ ISR(0x13) {
    panic("Kernel panic: SIMD Floating-Point Exception");
 }
 
+// reserved up to 0x1f
+
 // SCs
 
 SC(0x20) {
@@ -206,8 +218,10 @@ SC(0x20) {
 
 // IRQs
 
+/*
 IRQ(0x50) {
 }
+*/
 
 uint32_t i = vga::pos(5, 1);
 IRQ(0x51) {
@@ -217,6 +231,7 @@ IRQ(0x51) {
    ++i;
 }
 
+/*
 IRQ(0x52) {
 }
 
@@ -258,3 +273,4 @@ IRQ2(0x5e) {
 
 IRQ2(0x5f) {
 }
+*/
