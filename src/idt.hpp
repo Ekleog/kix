@@ -30,7 +30,7 @@ namespace idt
    inline void isr(uint8_t id, void (*isr) (), uint8_t dpl)
    {
       uint16_t selector;
-      asm volatile ("movw %0, %%cs" : "=g"(selector));
+      asm ("movw %0, %%cs" : "=g"(selector));
 
       uint32_t offset = reinterpret_cast<uint32_t>(isr);
 
