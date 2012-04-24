@@ -19,11 +19,11 @@ namespace idt
       idt_elem *base;
    } __attribute__ ((packed));
 
-   extern idtr IDTR;
    extern idt_elem IDT[256];
 
    inline void init()
    {
+      idtr IDTR;
       IDTR.limit  = 256 * sizeof(idt_elem);
       IDTR.base   = IDT;
       asm volatile ("lidt %0" : : "m"(IDTR));
