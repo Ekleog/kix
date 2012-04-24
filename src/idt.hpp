@@ -3,8 +3,8 @@
 
 #include <stdint.h>
 
-namespace idt {
-
+namespace idt
+{
    struct idt_elem
    {
       uint16_t low_offset;
@@ -46,7 +46,6 @@ namespace idt {
    {
       asm volatile ("sti");
    }
-
 }
 
 #endif
