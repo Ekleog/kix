@@ -15,7 +15,18 @@ OBJLDR   := build/$(LOADER).o
 
 ALLFILES := $(AUXFILES) $(CPPFILES) $(HPPFILES) $(ASMFILES) $(LDFILE)
 
-.PHONY: all mrproper clean dist todo
+ISO      := kix.iso
+
+ISODIR   := build/iso
+PAD      := build/pad
+BIN      := build/kernel.bin
+TODO     := TODO
+TGZ      := src.tgz
+
+TMPS     := $(OBJFILES) $(DEPFILES) $(PAD) $(BIN)
+BUILT    := $(TMPS) $(ISO) $(TGZ) $(TODO) $(STGFILES)
+
+.PHONY: all mrproper clean dist todo builddirs
 
 WARNINGS :=                                                          \
    -Wall -Wextra -Werror -Winline -Wdouble-promotion -Winit-self     \
@@ -36,22 +47,17 @@ CXXFLAGS := $(WARNINGS) -ffreestanding                   				\
 	-fno-exceptions -fno-rtti -fno-stack-protector -masm=intel			\
 	$(CXXFLAGS)
 ASMFLAGS := -Ox $(ASMFLAGS)
- LDFLAGS := -O3 -T $(LDFILE) $(LDFLAGS)
+LDFLAGS  := -O3 -T $(LDFILE) $(LDFLAGS)
 
-IMG  := kix.img
-PAD  := build/pad
-BIN  := build/kernel.bin
-TODO := TODO
-TGZ  := src.tgz
-
-TMPS  := $(OBJFILES) $(DEPFILES) $(PAD) $(BIN)
-BUILT := $(TMPS) $(IMG) $(TGZ) $(TODO) $(STGFILES)
-
-all: $(IMG) $(TODO)
+all: $(ISO) $(TODO)
 
 # TODO: Include a better way of configuring make process
 include config.mk
 -include $(DEPFILES)
+
+$(shell [ -d "$(ISODIR)/boot/grub" ] || mkdir -p $(ISODIR)/boot/grub)
+$(shell [ -d "build/src" ] || mkdir -p build/src)
+$(shell [ -d "ext" ] || mkdir -p ext)
 
 color =	@echo -e '\033[$(1)$(2)\033[0m'
 
@@ -81,9 +87,9 @@ $(TODO): $(ALLFILES) Makefile
 	      >> $(TODO);                                                 \
 	  done; true
 
-$(IMG): $(STGFILES) $(PAD) $(BIN) Makefile
+$(ISO): $(STGFILES) $(PAD) $(BIN) Makefile
 	$(call color,1;34m,-> Putting all together)
-	@cat $(STGFILES) $(PAD) $(BIN) > $(IMG)
+	@grub-mkrescue -o $(ISO) $(ISODIR) > /dev/null 2>&1
 
 ext/%.stage:
 	$(call color,35m,-> Downloading GRUB stages)
