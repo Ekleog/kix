@@ -23,7 +23,7 @@ namespace idt
 
    inline void init()
    {
-      idtr IDTR{256 * sizeof(idt_elem), IDT};
+      idtr IDTR{static_cast<uint16_t>(256 * sizeof(idt_elem)), IDT};
       asm volatile ("lidt %0" : : "m"(IDTR));
    }
 
