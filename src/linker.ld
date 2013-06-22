@@ -1,8 +1,7 @@
-ENTRY (loader)
-
 SECTIONS
 {
    . = 0x00100000;
+   loadbase = .;
 
    .text ALIGN (0x1000) :
    {

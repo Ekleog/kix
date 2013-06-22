@@ -19,7 +19,7 @@ ISO      := kix.iso
 
 ISODIR   := build/iso
 PAD      := build/pad
-BIN      := build/kernel.bin
+BIN      := $(ISODIR)/boot/kix.bin
 TODO     := TODO
 TGZ      := src.tgz
 
@@ -47,7 +47,7 @@ CXXFLAGS := $(WARNINGS) -ffreestanding                   				\
 	-fno-exceptions -fno-rtti -fno-stack-protector -masm=intel			\
 	$(CXXFLAGS)
 ASMFLAGS := -Ox $(ASMFLAGS)
-LDFLAGS  := -O3 -T $(LDFILE) $(LDFLAGS)
+LDFLAGS  := -O3 -T $(LDFILE) --oformat=binary $(LDFLAGS)
 
 all: $(ISO) $(TODO)
 
