@@ -18,7 +18,7 @@ header:
    dd MAGIC
    dd FLAGS
    dd CHECKSUM
-   dd header
+   dd header   ; Multiboot §3.1.3
    dd loadbase
    dd 00
    dd 00
